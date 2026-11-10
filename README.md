@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📘 Advanced React Patterns Playbook
 
-## Getting Started
+A technical repository demonstrating advanced architectural patterns in React and Next.js, focused on code maintainability, separation of concerns, and integration testing.
 
-First, run the development server:
+## 🎯 Purpose
+This playbook serves as a practical guide to understanding when, how, and why to use specific React patterns. It aims to evolve frontend development from basic component implementation to professional architectural decisions suitable for complex enterprise applications.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🏗️ Patterns Explored
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 1. Compound Components (`/src/components/patterns/01-compound-components`)
+* **Concept:** [To be filled: Brief explanation of the pattern]
+* **Real-world Scenario:** [To be filled: When would you use this in a real project?]
+* **Pros & Cons:** [To be filled]
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. Logic Extraction with Custom Hooks (`/src/components/patterns/02-custom-hooks`)
+* **Concept:** [To be filled]
+* **Real-world Scenario:** [To be filled]
+* **Pros & Cons:** [To be filled]
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Server vs. Client Components (`/src/components/patterns/03-server-client`)
+* **Concept:** [To be filled]
+* **Real-world Scenario:** [To be filled]
+* **Pros & Cons:** [To be filled]
 
-## Learn More
+## 🧪 Testing Strategy
+All complex UI flows in this playbook are validated using **Integration Tests** with `Vitest` and `React Testing Library`, ensuring that the components behave correctly from an end-user perspective.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Built as part of a continuous technical growth initiative.*
