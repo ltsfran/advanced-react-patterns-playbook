@@ -15,10 +15,13 @@ This playbook serves as a practical guide to understanding when, how, and why to
   * **When NOT to use:** Do not apply this pattern to rigid layouts (Headers, Footers) or business modules (`UserProfile`). For static components that only need DOM access for testing or styling, prefer a **Prop-driven** approach with `forwardRef` and **`slotProps`** (e.g., `buttonProps`) to maintain high abstraction without boilerplate.
   * **Explicit Identifiers over Magic:** Prefer explicit `name`/`value` props over `React.Children.map` index injection so wrapper elements (`<div>`, Fragments) do not break component communication.
 
-### 2. Logic Extraction with Custom Hooks (`/src/components/patterns/02-custom-hooks`)
-* **Concept:** [To be filled]
-* **Real-world Scenario:** [To be filled]
-* **Pros & Cons:** [To be filled]
+### 2. Logic Extraction with Custom Hooks (`/components/patterns/02-custom-hooks`)
+* **Concept:** Decoupling stateful business logic, side effects, and asynchronous orchestration into dedicated Custom Hooks, leaving UI components as pure, declarative presentation layers.
+* **Real-world Scenario:** Debounced search inputs (`useUserSearch`), rate-limited checkout forms (`useCouponCheckout` composing `useRateLimit`), and multi-step workflows where async race conditions (`AbortController`) and derived state must be isolated from JSX.
+* **Architectural Trade-offs (Avoiding Fragmentation):**
+  * **When to extract:** When coordinating multiple effects/timers, handling async race conditions, sharing stateful behavior across different layouts, or isolating complex domain rules.
+  * **When NOT to extract:** Avoid creating single-line wrapper hooks (e.g., wrapping a lone `useState` boolean) that fragment readability without reducing complexity.
+  * **React 19 & State Hygiene:** Derive state during render rather than triggering synchronous `setState` cascading renders inside `useEffect`, and expose domain-specific actions (`updateCode`, `removeCoupon`) instead of raw state setters.
 
 ### 3. Server vs. Client Components (`/src/components/patterns/03-server-client`)
 * **Concept:** [To be filled]
