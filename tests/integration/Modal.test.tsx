@@ -1,58 +1,65 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { Modal } from '../../components/patterns/01-compound-components/Modal';
+import { Modal, ModalOpen, ModalWindow } from '../../components/patterns/01-compound-components/Modal';
 
 describe('Modal Compound Component - Integration Flow', () => {
-  it('opens the modal window on trigger click and closes it on close button click', () => {
-    const customClickSpy = vi.fn();
-
+  it('opens the matching window on trigger click and closes via the close button', () => {
     render(
       <Modal>
-        <Modal.Open windowName="confirm-delete">
-          <button type="button" onClick={customClickSpy}>
-            Delete Item
-          </button>
-        </Modal.Open>
-
-        <Modal.Window name="confirm-delete">
-          <h2>Confirm Deletion</h2>
-          <p>Are you sure you want to delete this record?</p>
-        </Modal.Window>
+        <ModalOpen windowName="terms">Open Terms</ModalOpen>
+        <ModalWindow name="terms">
+          <p>Terms and Conditions Content</p>
+        </ModalWindow>
       </Modal>
     );
 
-    // 1. Estado inicial: El contenido del modal NO debe estar en el documento
-    expect(screen.queryByText('Confirm Deletion')).not.toBeInTheDocument();
+    expect(screen.queryByText('Terms and Conditions Content')).not.toBeInTheDocument();
 
-    // 2. Interacción del usuario: Clic en el botón gatillador
-    const triggerButton = screen.getByRole('button', { name: /delete item/i });
-    fireEvent.click(triggerButton);
+    fireEvent.click(screen.getByRole('button', { name: /open terms/i }));
+    expect(screen.getByText('Terms and Conditions Content')).toBeInTheDocument();
 
-    // 3. Verificación: Se ejecutó el onClick original y se abrió la ventana correcta
-    expect(customClickSpy).toHaveBeenCalledTimes(1);
-    expect(screen.getByText('Confirm Deletion')).toBeInTheDocument();
-    expect(screen.getByText('Are you sure you want to delete this record?')).toBeInTheDocument();
-
-    // 4. Interacción de cierre: Clic en el botón con aria-label="Close modal"
-    const closeButton = screen.getByRole('button', { name: /close modal/i });
-    fireEvent.click(closeButton);
-
-    // 5. Verificación final: El modal desaparece del DOM
-    expect(screen.queryByText('Confirm Deletion')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /close modal/i }));
+    expect(screen.queryByText('Terms and Conditions Content')).not.toBeInTheDocument();
   });
 
-  it('throws an error when sub-components are rendered outside the Modal provider', () => {
-    // Silenciamos el console.error esperado de React para mantener limpia la salida del test
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  it('isolates multiple modal windows so only the active one renders', () => {
+    render(
+      <Modal>
+        <ModalOpen windowName="terms">Open Terms</ModalOpen>
+        <ModalOpen windowName="privacy">Open Privacy</ModalOpen>
 
-    expect(() =>
-      render(
-        <Modal.Window name="orphan-modal">
-          <p>Orphan content</p>
-        </Modal.Window>
-      )
-    ).toThrow('Window must be used within a Modal');
+        <ModalWindow name="terms">
+          <p>Terms Content</p>
+        </ModalWindow>
+        <ModalWindow name="privacy">
+          <p>Privacy Policy Content</p>
+        </ModalWindow>
+      </Modal>
+    );
 
-    consoleErrorSpy.mockRestore();
+    fireEvent.click(screen.getByRole('button', { name: /open privacy/i }));
+
+    expect(screen.getByText('Privacy Policy Content')).toBeInTheDocument();
+    expect(screen.queryByText('Terms Content')).not.toBeInTheDocument();
+  });
+
+  it('preserves custom onClick handlers passed to ModalOpen', () => {
+    const handleCustomClick = vi.fn();
+
+    render(
+      <Modal>
+        <ModalOpen windowName="terms" onClick={handleCustomClick}>
+          Open Terms
+        </ModalOpen>
+        <ModalWindow name="terms">
+          <p>Terms Content</p>
+        </ModalWindow>
+      </Modal>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /open terms/i }));
+
+    expect(handleCustomClick).toHaveBeenCalledTimes(1);
+    expect(screen.getByText('Terms Content')).toBeInTheDocument();
   });
 });

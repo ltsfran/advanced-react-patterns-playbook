@@ -9,6 +9,7 @@ This playbook serves as a practical guide to understanding when, how, and why to
 
 ### 1. Compound Components (`/components/patterns/01-compound-components`)
 * **Concept:** A pattern where two or more components work together to accomplish a task, sharing implicit internal state via `React Context` while delegating UI layout control to the consumer.
+* **RSC-compatible API:** Import `Modal`, `ModalOpen`, and `ModalWindow` as separate named functions. Compose them through children rather than accessing static properties such as `Modal.Open` across the server/client boundary.
 * **Real-world Scenario:** Interactive UI primitives with complex shared state and high layout flexibility—such as Modals, Multi-select Dropdowns, Tabs, Accordions, and self-governed Steppers.
 * **Architectural Trade-offs (Avoiding Over-engineering):**
   * **When to use:** Only when sub-components need implicit state communication *and* consumers need structural freedom (e.g., reordering triggers/windows or injecting `data-testid`/`ref` attributes directly onto inner nodes without prop tunneling).
@@ -23,10 +24,12 @@ This playbook serves as a practical guide to understanding when, how, and why to
   * **When NOT to extract:** Avoid creating single-line wrapper hooks (e.g., wrapping a lone `useState` boolean) that fragment readability without reducing complexity.
   * **React 19 & State Hygiene:** Derive state during render rather than triggering synchronous `setState` cascading renders inside `useEffect`, and expose domain-specific actions (`updateCode`, `removeCoupon`) instead of raw state setters.
 
-### 3. Server vs. Client Components (`/src/components/patterns/03-server-client`)
-* **Concept:** [To be filled]
-* **Real-world Scenario:** [To be filled]
-* **Pros & Cons:** [To be filled]
+### 3. Server vs. Client Components (`/components/patterns/03-server-client`)
+* **Concept:** Defining explicit rendering and mutation boundaries in Next.js App Router to minimize client-side JavaScript bundles while preserving rich interactivity.
+* **Real-world Scenario:** Interactive drawers, tabs, or global context providers wrapping server-rendered data tables (`ClientAuditWorkspace` + `ServerAuditLogs`), paired with Server Actions (`addAuditNoteAction`) for form mutations.
+* **Architectural Trade-offs & Boundaries:**
+  * **Donut Pattern:** Pass Server Components as `children` (or slot props) into Client Component wrappers rather than importing them directly, preventing client boundary contagion (`'use client'`).
+  * **Directives & Guardrails:** Reserve `'use client'` for interactive browser islands, `'use server'` for authenticated POST mutations (paired with React 19 `useActionState`), and `server-only` to enforce compile-time protection of sensitive server modules.
 
 ## 🧪 Testing Strategy
 All complex UI flows in this playbook are validated using **Integration Tests** with `Vitest` and `React Testing Library`, ensuring that the components behave correctly from an end-user perspective.

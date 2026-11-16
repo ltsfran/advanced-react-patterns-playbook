@@ -16,7 +16,6 @@ export function Modal({ children }: Readonly<{ children: ReactNode }>) {
   const close = useCallback(() => setOpenName(''), []);
   const open = useCallback((name: string) => setOpenName(name), []);
 
-  // Memorizamos el objeto del contexto para evitar re-renders innecesarios (SonarQube S6481)
   const contextValue = useMemo(
     () => ({ openName, close, open }),
     [openName, close, open]
@@ -29,22 +28,30 @@ export function Modal({ children }: Readonly<{ children: ReactNode }>) {
   );
 }
 
-interface OpenProps {
-  children: React.ReactElement<{ onClick?: () => void }>;
+interface OpenProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
+  children: ReactNode;
   windowName: string;
 }
 
-function Open({ children, windowName }: Readonly<OpenProps>) {
+export function ModalOpen({
+  children,
+  windowName,
+  onClick,
+  ...rest
+}: Readonly<OpenProps>) {
   const context = useContext(ModalContext);
   if (!context) throw new Error('Open must be used within a Modal');
 
-  return React.cloneElement(children, {
-    onClick: () => {
-      // Ejecutamos el onClick original del botón si existía, y luego abrimos el modal
-      children.props.onClick?.();
-      context.open(windowName);
-    },
-  });
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    onClick?.(e);
+    context.open(windowName);
+  };
+
+  return (
+    <button type="button" onClick={handleClick} {...rest}>
+      {children}
+    </button>
+  );
 }
 
 interface WindowProps {
@@ -52,7 +59,7 @@ interface WindowProps {
   name: string;
 }
 
-function Window({ children, name }: Readonly<WindowProps>) {
+export function ModalWindow({ children, name }: Readonly<WindowProps>) {
   const context = useContext(ModalContext);
   if (!context) throw new Error('Window must be used within a Modal');
 
@@ -74,6 +81,3 @@ function Window({ children, name }: Readonly<WindowProps>) {
     </div>
   );
 }
-
-Modal.Open = Open;
-Modal.Window = Window;
