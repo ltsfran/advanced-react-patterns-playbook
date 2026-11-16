@@ -7,10 +7,13 @@ This playbook serves as a practical guide to understanding when, how, and why to
 
 ## 🏗️ Patterns Explored
 
-### 1. Compound Components (`/src/components/patterns/01-compound-components`)
-* **Concept:** [To be filled: Brief explanation of the pattern]
-* **Real-world Scenario:** [To be filled: When would you use this in a real project?]
-* **Pros & Cons:** [To be filled]
+### 1. Compound Components (`/components/patterns/01-compound-components`)
+* **Concept:** A pattern where two or more components work together to accomplish a task, sharing implicit internal state via `React Context` while delegating UI layout control to the consumer.
+* **Real-world Scenario:** Interactive UI primitives with complex shared state and high layout flexibility—such as Modals, Multi-select Dropdowns, Tabs, Accordions, and self-governed Steppers.
+* **Architectural Trade-offs (Avoiding Over-engineering):**
+  * **When to use:** Only when sub-components need implicit state communication *and* consumers need structural freedom (e.g., reordering triggers/windows or injecting `data-testid`/`ref` attributes directly onto inner nodes without prop tunneling).
+  * **When NOT to use:** Do not apply this pattern to rigid layouts (Headers, Footers) or business modules (`UserProfile`). For static components that only need DOM access for testing or styling, prefer a **Prop-driven** approach with `forwardRef` and **`slotProps`** (e.g., `buttonProps`) to maintain high abstraction without boilerplate.
+  * **Explicit Identifiers over Magic:** Prefer explicit `name`/`value` props over `React.Children.map` index injection so wrapper elements (`<div>`, Fragments) do not break component communication.
 
 ### 2. Logic Extraction with Custom Hooks (`/src/components/patterns/02-custom-hooks`)
 * **Concept:** [To be filled]
